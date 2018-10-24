@@ -24,12 +24,8 @@ app.use(morgan('dev'))
 
 // Views
 app.get('/', function(req, res) {
-    res.render('views/index');
+  res.render('views/index');
 });
-// app.get('/events', function(req, res) {
-//     res.render('views/events', { msg: "Please login with facebook!", className: "" });
-// });
-
 
 app.get('/events', function(req, res) {
   console.log(req.query.code);
@@ -54,26 +50,23 @@ app.get('/events', function(req, res) {
         });
         return;
       }
-      console.log("access_token : " + resToken.access_token);
-      console.log("expires: " + resToken.expires);
+
       var accessToken = resToken.access_token;
       var expires = resToken.expires ? resToken.expires : 0;
 
-    // FB.setAccessToken(accessToken);
+      let fieldList = "id,name,events.limit(50){name,place,description,cover,start_time,attending_count,interested_count}";
+      FB.api('me', { fields: fieldList, access_token: accessToken }, function (fbRes) {
+        console.log(JSON.stringify(fbRes, null, 2));
 
-    let fieldList = "id,name,events.limit(50){name,place,description,cover,start_time,attending_count,interested_count}";
-    FB.api('me', { fields: fieldList, access_token: accessToken }, function (fbRes) {
-      console.log(JSON.stringify(fbRes, null, 2));
-
-      res.render('views/events', {
-        id: fbRes.id,
-        title: fbRes.name + '\'s Facebook Events',
-        colorCode: randomColor({luminosity: 'dark', count: fbRes.events.data.length}),
-        events: fbRes.events.data,
-        moment: moment
+        res.render('views/events', {
+          id: fbRes.id,
+          title: fbRes.name + '\'s Facebook Events',
+          colorCode: randomColor({luminosity: 'dark', count: fbRes.events.data.length}),
+          events: fbRes.events.data,
+          moment: moment
+        });
       });
     });
-  });
   } else {
     res.render('views/events', {
       id: 0,

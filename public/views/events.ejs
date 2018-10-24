@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Synchronizer Token Pattern</title>
+  <title>OAuth FB Events Demo</title>
   <link rel="stylesheet" type="text/css" href="main.css">
   <link rel="stylesheet" href="events.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
@@ -50,7 +50,22 @@
   #timeline .demo-card--step<%= i+1 %> .head::after {
     border-color: <%= colorCode[i] %>;
   }
-  <% }; %>
+
+  <% if ((i+1) % 2 == 1) { -%>
+    .demo-card:nth-child(<%= i+1 %>) {
+      order: <%= Math.ceil((i+1)/2) %>;
+    }
+  <% } else { -%>
+    .demo-card:nth-child(<%= i+1 %>) {
+      order: <%= Math.ceil((events.length / 2)) + Math.ceil((i+1)/2) %>;
+    }
+  <% } -%>
+
+<% }; %>
+
+#timeline .demo-card-wrapper {
+  height: <%= 330 * events.length %>px;
+}
 </style>
 
 </html>
